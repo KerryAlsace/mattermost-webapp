@@ -1,7 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import PropTypes from 'prop-types';
 import React from 'react';
 import {Modal, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import {FormattedMessage} from 'react-intl';
@@ -10,61 +9,62 @@ import Constants from 'utils/constants';
 import {getShortenedURL, cleanUpUrlable} from 'utils/url';
 import {t} from 'utils/i18n';
 
-export default class ChangeURLModal extends React.PureComponent {
-    static propTypes = {
+type Props = {
+    {
 
         /**
         * Set whether to show the modal or not
         */
-        show: PropTypes.bool.isRequired,
+        show: boolean;
 
         /**
         * Set to change the title of the modal
         */
-        title: PropTypes.node,
+        title?: React.ReactNode;
 
         /**
         * Set to change the submit button text
         */
-        submitButtonText: PropTypes.node,
+        submitButtonText?: React.ReactNode;
 
         /**
         * Set to change the current URL
         */
-        currentURL: PropTypes.string,
+        currentURL?: string;
 
         /**
         * Set to the current team URL
         */
-        currentTeamURL: PropTypes.string.isRequired,
+        currentTeamURL: string;
 
         /**
         * Server error from failed channel creation
         */
-        serverError: PropTypes.node,
+        serverError?: React.ReactNode;
 
         /**
          * Function to call when modal is submitted
          */
-        onModalSubmit: PropTypes.func.isRequired,
+        onModalSubmit: () => void;
 
         /**
          * Function to call when modal is exited
          */
-        onModalExited: PropTypes.func,
+        onModalExited?:  () => void;
 
         /**
          * Function to call when modal is dimissed
          */
-        onModalDismissed: PropTypes.func.isRequired,
+        onModalDismissed: () => void;
     }
+}
 
-    static defaultProps = {
+export default class ChangeURLModal extends React.PureComponent<Props> {
+    public static defaultProps: Props = {
         show: false,
         title: 'Change URL',
         submitButtonText: 'Save',
         currentURL: '',
-        serverError: null,
     }
 
     constructor(props) {
@@ -151,7 +151,7 @@ export default class ChangeURLModal extends React.PureComponent {
         this.props.onModalDismissed();
     }
 
-    render() {
+    public render() {
         let urlClass = 'input-group input-group--limit';
         let error = null;
 
