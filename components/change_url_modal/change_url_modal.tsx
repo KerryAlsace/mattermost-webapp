@@ -58,21 +58,24 @@ type Props = {
 
 type State = {
   currentURL: string | undefined;
-  urlError: string;
+  urlError: string | JSX.Element[];
   userEdit: boolean;
 };
 
 export default class ChangeURLModal extends React.PureComponent<Props, State> {
-  public state: State;
   public static defaultProps: Partial<Props> = {
     show: false,
     title: "Change URL",
     submitButtonText: "Save",
     currentURL: ""
   };
+  public state: State;
+
+  private urlInput = React.createRef<HTMLInputElement>();
 
   public constructor(props: Props) {
     super(props);
+
     this.state = {
       currentURL: props.currentURL,
       urlError: "",
@@ -166,7 +169,7 @@ export default class ChangeURLModal extends React.PureComponent<Props, State> {
 
   private onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    const url = this.refs.urlinput.value;
+    const url = this.urlInput.current!.value;
     const cleanedURL = cleanUpUrlable(url);
     if (cleanedURL !== url || url.length < 2 || url.indexOf("__") > -1) {
       this.setState({ urlError: this.getURLError(url) });
@@ -243,13 +246,13 @@ export default class ChangeURLModal extends React.PureComponent<Props, State> {
                   </OverlayTrigger>
                   <input
                     type="text"
-                    ref="urlinput"
+                    ref={this.urlInput}
                     className="form-control"
                     maxLength={Constants.MAX_CHANNELNAME_LENGTH}
                     onChange={this.onURLChanged}
                     value={this.state.currentURL}
                     autoFocus={true}
-                    tabIndex="1"
+                    tabIndex={1}
                   />
                 </div>
                 {error}
@@ -268,7 +271,7 @@ export default class ChangeURLModal extends React.PureComponent<Props, State> {
               onClick={this.onSubmit}
               type="submit"
               className="btn btn-primary"
-              tabIndex="2"
+              tabIndex={2}
             >
               {this.props.submitButtonText}
             </button>
