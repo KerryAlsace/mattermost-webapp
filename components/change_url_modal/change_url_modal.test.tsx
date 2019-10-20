@@ -2,7 +2,7 @@
 // See LICENSE.txt for license information.
 
 import React from "react";
-import { shallow, ReactWrapper } from "enzyme";
+import { shallow, ReactWrapper, ShallowWrapper } from "enzyme";
 import { Modal } from "react-bootstrap";
 
 import { mountWithIntl } from "tests/helpers/intl-test-helper";
@@ -19,49 +19,54 @@ describe("components/ChangeURLModal", () => {
 
   test("should match snapshot, modal not showing", () => {
     const props = { ...baseProps, show: false };
-    const wrapper = shallow(<ChangeURLModal {...props} />);
+    const wrapper: ShallowWrapper<any, any, ChangeURLModal> = shallow(
+      <ChangeURLModal {...props} />
+    );
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.find(Modal).props().show).toEqual(false);
   });
 
   test("should match snapshot, modal showing", () => {
-    const wrapper = shallow(<ChangeURLModal {...baseProps} />);
+    const wrapper: ShallowWrapper<any, any, ChangeURLModal> = shallow(
+      <ChangeURLModal {...baseProps} />
+    );
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.find(Modal).props().show).toEqual(true);
   });
 
   test("should match snapshot, with a input", () => {
     const props = { ...baseProps };
-    const wrapper = shallow(<ChangeURLModal {...props} />);
+    const wrapper: ShallowWrapper<any, any, ChangeURLModal> = shallow(
+      <ChangeURLModal {...props} />
+    );
     const input = wrapper.find("input");
     expect(wrapper).toMatchSnapshot();
     expect(input.length).toEqual(1);
   });
 
   test("should match snapshot, on urlError", () => {
-    const wrapper = shallow(<ChangeURLModal {...baseProps} />);
+    const wrapper: ShallowWrapper<any, any, ChangeURLModal> = shallow(
+      <ChangeURLModal {...baseProps} />
+    );
     wrapper.setState({ urlError: true });
     expect(wrapper.find(".has-error").length).toEqual(2);
     expect(wrapper).toMatchSnapshot();
   });
 
   test("should match snapshot, on currentURL", () => {
-    const wrapper = shallow(<ChangeURLModal {...baseProps} />);
+    const wrapper: ShallowWrapper<any, any, ChangeURLModal> = shallow(
+      <ChangeURLModal {...baseProps} />
+    );
     wrapper.setState({ urlError: true });
     expect(wrapper).toMatchSnapshot();
   });
 
   test("should match state when onSubmit is called with a valid URL", () => {
-    const wrapper: ReactWrapper<
-      {
-        intl: ReactIntl.InjectedIntl;
-      },
-      Readonly<{}>,
-      ChangeURLModal
-    > = mountWithIntl(<ChangeURLModal {...baseProps} />);
-    const refURLInput: ReactWrapper<{}, {}, ChangeURLModal> = wrapper.ref(
-      "urlInput"
-    );
+    const wrapper = mountWithIntl(<ChangeURLModal {...baseProps} />);
+    const refURLInput = wrapper.ref<
+      { intl: ReactIntl.InjectedIntl },
+      Readonly<{}>
+    >("urlInput");
     refURLInput.value = "urlexample";
 
     wrapper.instance().onSubmit({ preventDefault: jest.fn() });
