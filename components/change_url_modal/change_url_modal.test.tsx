@@ -63,10 +63,7 @@ describe("components/ChangeURLModal", () => {
 
   test("should match state when onSubmit is called with a valid URL", () => {
     const wrapper = mountWithIntl(<ChangeURLModal {...baseProps} />);
-    const refURLInput = wrapper.ref<
-      { intl: ReactIntl.InjectedIntl },
-      Readonly<{}>
-    >("urlInput");
+    const refURLInput = wrapper.ref("urlInput");
     refURLInput.value = "urlexample";
 
     wrapper.instance().onSubmit({ preventDefault: jest.fn() });
@@ -82,7 +79,7 @@ describe("components/ChangeURLModal", () => {
       any,
       React.Component<{}, {}, ChangeURLModal>
     > = wrapper.ref("urlInput");
-    refURLInput.current!.value = value;
+    refURLInput.value = value;
 
     wrapper.instance().onSubmit({ preventDefault: jest.fn() });
 
@@ -90,7 +87,11 @@ describe("components/ChangeURLModal", () => {
   });
 
   test("should match state when onURLChanged is called", () => {
-    const wrapper = mountWithIntl(<ChangeURLModal {...baseProps} />);
+    const wrapper: ReactWrapper<
+      any,
+      any,
+      React.Component<any, any, ChangeURLModal>
+    > = mountWithIntl(<ChangeURLModal {...baseProps} />);
     const value = "URLEXAMPLE";
     const target = { value };
     wrapper.instance().onURLChanged({ target });

@@ -71,7 +71,7 @@ export default class ChangeURLModal extends React.PureComponent<Props, State> {
   };
   public state: State;
 
-  private urlInput = React.createRef<HTMLInputElement>();
+  public urlInput = React.createRef<HTMLInputElement>();
 
   public constructor(props: Props) {
     super(props);
@@ -94,7 +94,7 @@ export default class ChangeURLModal extends React.PureComponent<Props, State> {
     }
   }
 
-  private onURLChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+  public onURLChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
     const url = e.target.value.trim();
     this.setState({
       currentURL: url.replace(/[^A-Za-z0-9-_]/g, "").toLowerCase(),
@@ -102,7 +102,7 @@ export default class ChangeURLModal extends React.PureComponent<Props, State> {
     });
   };
 
-  formattedError = (key: string, id: string, message: string) => {
+  public formattedError = (key: string, id: string, message: string) => {
     return (
       <span key={key}>
         <FormattedMessage id={id} defaultMessage={message} />
@@ -167,7 +167,7 @@ export default class ChangeURLModal extends React.PureComponent<Props, State> {
     return error;
   };
 
-  private onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  public onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     const url = this.urlInput.current!.value;
     const cleanedURL = cleanUpUrlable(url);
@@ -179,7 +179,7 @@ export default class ChangeURLModal extends React.PureComponent<Props, State> {
     this.props.onModalSubmit(url);
   };
 
-  private onCancel = () => {
+  public onCancel = () => {
     this.setState({ urlError: "", userEdit: false });
     this.props.onModalDismissed();
   };
