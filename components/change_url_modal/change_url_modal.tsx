@@ -67,15 +67,13 @@ export default class ChangeURLModal extends React.PureComponent<Props, State> {
     show: false,
     title: "Change URL",
     submitButtonText: "Save",
-    currentURL: ""
+    currentURL: "",
+    serverError: null
   };
   public state: State;
 
-  public urlInput = React.createRef<HTMLInputElement>();
-
   public constructor(props: Props) {
     super(props);
-
     this.state = {
       currentURL: props.currentURL,
       urlError: "",
@@ -83,15 +81,14 @@ export default class ChangeURLModal extends React.PureComponent<Props, State> {
     };
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps: Props) {
-    // eslint-disable-line camelcase
+  public static getDerivedStateFromProps(props: Props, state: State) {
     // This check prevents the url being deleted when we re-render
     // because of user status check
-    if (!this.state.userEdit) {
-      this.setState({
-        currentURL: nextProps.currentURL
-      });
+    if (!state.userEdit) {
+      return { currentURL: props.currentURL };
     }
+
+    return null;
   }
 
   public onURLChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -112,7 +109,7 @@ export default class ChangeURLModal extends React.PureComponent<Props, State> {
   };
 
   private getURLError = (url: string) => {
-    let error: JSX.Element[] = [];
+    let error = []; //eslint-disable-line prefer-const
 
     if (url.length < 2) {
       error.push(
@@ -169,7 +166,10 @@ export default class ChangeURLModal extends React.PureComponent<Props, State> {
 
   public onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    const url = this.urlInput.current!.value;
+
+    const urlInput: Element = this.refs["urlinput"];
+
+    const url = this.refs.urlinput.value;
     const cleanedURL = cleanUpUrlable(url);
     if (cleanedURL !== url || url.length < 2 || url.indexOf("__") > -1) {
       this.setState({ urlError: this.getURLError(url) });
@@ -246,7 +246,7 @@ export default class ChangeURLModal extends React.PureComponent<Props, State> {
                   </OverlayTrigger>
                   <input
                     type="text"
-                    ref={this.urlInput}
+                    ref="urlinput"
                     className="form-control"
                     maxLength={Constants.MAX_CHANNELNAME_LENGTH}
                     onChange={this.onURLChanged}
