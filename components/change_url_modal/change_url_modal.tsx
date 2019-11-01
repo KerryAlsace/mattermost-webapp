@@ -1,7 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import PropTypes from 'prop-types';
 import React from 'react';
 import {Modal, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import {FormattedMessage} from 'react-intl';
@@ -10,64 +9,71 @@ import Constants from 'utils/constants';
 import {getShortenedURL, cleanUpUrlable} from 'utils/url';
 import {t} from 'utils/i18n';
 
-export default class ChangeURLModal extends React.PureComponent {
-    static propTypes = {
+    type ChangeURLModalProps = {
 
         /**
         * Set whether to show the modal or not
         */
-        show: PropTypes.bool.isRequired,
+       show: boolean;
 
         /**
         * Set to change the title of the modal
         */
-        title: PropTypes.node,
+       title?: React.ReactNode;
 
         /**
         * Set to change the submit button text
         */
-        submitButtonText: PropTypes.node,
+       submitButtonText?: React.ReactNode;
 
         /**
         * Set to change the current URL
         */
-        currentURL: PropTypes.string,
+       currentURL?: string;
 
         /**
         * Set to the current team URL
         */
-        currentTeamURL: PropTypes.string.isRequired,
+       currentTeamURL: string;
 
         /**
         * Server error from failed channel creation
         */
-        serverError: PropTypes.node,
+       serverError?: React.ReactNode;
 
         /**
          * Function to call when modal is submitted
          */
-        onModalSubmit: PropTypes.func.isRequired,
+        onModalSubmit: (url: string) => void;
 
         /**
          * Function to call when modal is exited
          */
-        onModalExited: PropTypes.func,
+        onModalExited?: () => void;
 
         /**
          * Function to call when modal is dimissed
          */
-        onModalDismissed: PropTypes.func.isRequired,
+        onModalDismissed: () => void;
     }
 
-    static defaultProps = {
+    type State = {
+        currentURL: string | undefined;
+  urlError: string | JSX.Element[];
+  userEdit: boolean;
+    }
+
+export default class ChangeURLModal extends React.PureComponent<ChangeURLModalProps, State> {
+    public static defaultProps: Partial<Props> = {
         show: false,
         title: 'Change URL',
         submitButtonText: 'Save',
         currentURL: '',
         serverError: null,
     }
+    public state: State;
 
-    constructor(props) {
+    constructor(props: ChangeURLModalProps) {
         super(props);
         this.state = {
             currentURL: props.currentURL,
@@ -76,7 +82,7 @@ export default class ChangeURLModal extends React.PureComponent {
         };
     }
 
-    static getDerivedStateFromProps(props, state) {
+    private static getDerivedStateFromProps(props: ChangeURLModalProps, state: State) {
         // This check prevents the url being deleted when we re-render
         // because of user status check
         if (!state.userEdit) {
@@ -86,12 +92,12 @@ export default class ChangeURLModal extends React.PureComponent {
         return null;
     }
 
-    onURLChanged = (e) => {
+    public onURLChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
         const url = e.target.value.trim();
         this.setState({currentURL: url.replace(/[^A-Za-z0-9-_]/g, '').toLowerCase(), userEdit: true});
     }
 
-    formattedError = (key, id, message) => {
+    public formattedError = (key: string, id: string, message: string) => {
         return (<span key={key}>
             <FormattedMessage
                 id={id}
@@ -101,7 +107,7 @@ export default class ChangeURLModal extends React.PureComponent {
         </span>);
     }
 
-    getURLError = (url) => {
+    private getURLError = (url: string) => {
         let error = []; //eslint-disable-line prefer-const
 
         if (url.length < 2) {
@@ -134,7 +140,7 @@ export default class ChangeURLModal extends React.PureComponent {
         return error;
     }
 
-    onSubmit = (e) => {
+    public onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
         const url = this.refs.urlinput.value;
         const cleanedURL = cleanUpUrlable(url);
@@ -146,12 +152,12 @@ export default class ChangeURLModal extends React.PureComponent {
         this.props.onModalSubmit(url);
     }
 
-    onCancel = () => {
+    public onCancel = () => {
         this.setState({urlError: '', userEdit: false});
         this.props.onModalDismissed();
     }
 
-    render() {
+    public render() {
         let urlClass = 'input-group input-group--limit';
         let error = null;
 
