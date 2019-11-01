@@ -142,7 +142,8 @@ export default class ChangeURLModal extends React.PureComponent<ChangeURLModalPr
 
     public onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
-        const url = this.refs.urlinput.value;
+        const urlInput = this.refs.urlinput as HTMLInputElement
+        const url = urlInput.value;
         const cleanedURL = cleanUpUrlable(url);
         if (cleanedURL !== url || url.length < 2 || url.indexOf('__') > -1) {
             this.setState({urlError: this.getURLError(url)});
